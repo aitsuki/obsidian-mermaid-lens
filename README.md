@@ -31,6 +31,43 @@ npm run build
 
 然后在 Obsidian 的“设置 → 第三方插件”中重新加载并启用 **Mermaid Lens**。
 
+## 在真实 Obsidian 中测试
+
+项目可以在根目录创建一个被 Git 忽略的 `ObsidianTestVault/`。运行：
+
+```bash
+npm run deploy
+```
+
+该命令会先构建插件，然后：
+
+- 将插件部署到 `ObsidianTestVault/.obsidian/plugins/mermaid-lens/`
+- 将多维度验收笔记复制到 `ObsidianTestVault/Mermaid Lens Tests/`
+- 自动创建并注册尚不存在的本地测试 Vault
+- 通过 Obsidian URI 启动 Obsidian、切换到该 Vault 并打开验收清单
+
+无论 Obsidian 尚未启动、已打开其他 Vault，还是已经打开测试 Vault，都使用同一个命令。启用插件后，从 `00-验收清单.md` 开始检查。测试笔记包含简单、中等复杂度和大型图表，覆盖流程图、时序图、状态图、类图、ER 图、链接、重复 SVG ID 和超宽图表。
+
+也可以部署到任意现有测试 Vault：
+
+```bash
+npm run deploy -- --vault "C:\\path\\to\\vault"
+```
+
+如不希望复制验收笔记：
+
+```bash
+npm run deploy -- --vault "C:\\path\\to\\vault" --no-notes
+```
+
+如只部署、不打开 Obsidian：
+
+```bash
+npm run deploy -- --no-open
+```
+
+每次修改代码后重新运行部署命令，再在 Obsidian 中禁用并重新启用插件。可按 `Ctrl+Shift+I` 打开开发者工具检查 Console。
+
 ## 使用
 
 启用后 Mermaid 代码只需保留图表正文：
