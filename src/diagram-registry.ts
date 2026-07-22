@@ -15,6 +15,10 @@ interface HostHandlers {
   doubleClick(event: MouseEvent): void;
 }
 
+type ViewerOpener = (app: App, svg: SVGSVGElement) => void;
+
+const openViewer: ViewerOpener = (app, svg) => new MermaidViewerModal(app, svg).open();
+
 function asElement(value: EventTarget | null): Element | null {
   return value !== null && typeof (value as Element).closest === "function"
     ? value as Element
@@ -24,11 +28,13 @@ function asElement(value: EventTarget | null): Element | null {
 export class DiagramRegistry {
   private readonly app: App;
   private readonly options: RegistryOptions;
+  private readonly viewerOpener: ViewerOpener;
   private readonly handlers = new WeakMap<HTMLElement, HostHandlers>();
 
-  constructor(app: App, options: RegistryOptions) {
+  constructor(app: App, options: RegistryOptions, viewerOpener: ViewerOpener = openViewer) {
     this.app = app;
     this.options = options;
+    this.viewerOpener = viewerOpener;
   }
 
   scan(root: ParentNode): void {
@@ -113,6 +119,6 @@ export class DiagramRegistry {
 
   private open(host: HTMLElement): void {
     const svg = host.querySelector<SVGSVGElement>("svg");
-    if (svg) new MermaidViewerModal(this.app, svg).open();
+    if (svg) this.viewerOpener(this.app, svg);
   }
 }

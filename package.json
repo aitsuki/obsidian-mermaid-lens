@@ -5,19 +5,25 @@
   "main": "dist/main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
-    "test": "tsx --test tests/*.test.ts",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "build": "tsc --noEmit && node esbuild.config.mjs production"
   },
-  "keywords": ["obsidian", "mermaid"],
+  "keywords": [
+    "obsidian",
+    "mermaid"
+  ],
   "author": "aitsuki",
   "repository": "github:aitsuki/obsidian-mermaid-lens",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "@vitest/coverage-v8": "^4.1.10",
     "builtin-modules": "^4.0.0",
     "esbuild": "^0.28.1",
+    "happy-dom": "^20.11.0",
     "obsidian": "latest",
-    "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.10"
   }
 }

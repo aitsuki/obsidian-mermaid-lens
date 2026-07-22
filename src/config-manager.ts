@@ -3,16 +3,19 @@ import { MermaidConfig, mergeConfig } from "./config-utils";
 
 export { parseConfigJson } from "./config-utils";
 
-interface MermaidApi {
+export interface MermaidApi {
   initialize(config: MermaidConfig): void;
   getConfig?: () => MermaidConfig;
 }
+
+type MermaidLoader = () => Promise<MermaidApi>;
 
 /**
  * Wraps Obsidian's shared Mermaid instance. The wrapper becomes a transparent
  * pass-through after dispose, even when another plugin wrapped it afterwards.
  */
 export class MermaidConfigManager {
+  private readonly load: MermaidLoader;
   private api?: MermaidApi;
   private originalInitialize?: MermaidApi["initialize"];
   private wrapper?: MermaidApi["initialize"];
@@ -20,13 +23,17 @@ export class MermaidConfigManager {
   private customConfig: MermaidConfig = {};
   private active = false;
 
+  constructor(load: MermaidLoader = async () => loadMermaid() as unknown as MermaidApi) {
+    this.load = load;
+  }
+
   async install(config: MermaidConfig): Promise<void> {
     if (this.active) {
       this.apply(config);
       return;
     }
 
-    const api = await loadMermaid() as unknown as MermaidApi;
+    const api = await this.load();
     const original = api.initialize;
     this.api = api;
     this.originalInitialize = original;

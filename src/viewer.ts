@@ -1,69 +1,15 @@
 import { App, Modal, setIcon } from "obsidian";
-
-interface Size { width: number; height: number }
-interface ViewState { scale: number; x: number; y: number }
-interface Point { x: number; y: number }
-
-const MIN_SCALE = 0.1;
-const MAX_SCALE = 10;
-let cloneSequence = 0;
-
-const clamp = (value: number, min: number, max: number): number =>
-  Math.min(max, Math.max(min, value));
-
-function diagramSize(svg: SVGSVGElement): Size {
-  const viewBox = svg.viewBox.baseVal;
-  if (viewBox.width > 0 && viewBox.height > 0) {
-    return { width: viewBox.width, height: viewBox.height };
-  }
-  const width = Number.parseFloat(svg.getAttribute("width") ?? "");
-  const height = Number.parseFloat(svg.getAttribute("height") ?? "");
-  return {
-    width: Number.isFinite(width) && width > 0 ? width : 800,
-    height: Number.isFinite(height) && height > 0 ? height : 500
-  };
-}
-
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-/** Prevent cloned SVG marker/filter/gradient IDs from colliding with the source. */
-function remapSvgIds(svg: SVGSVGElement): void {
-  const prefix = `mermaid-lens-${Date.now()}-${cloneSequence++}-`;
-  const idMap = new Map<string, string>();
-  const elements = [svg, ...Array.from(svg.querySelectorAll<SVGElement>("*"))];
-
-  for (const element of elements) {
-    const oldId = element.id;
-    if (!oldId) continue;
-    const newId = `${prefix}${oldId}`;
-    idMap.set(oldId, newId);
-    element.id = newId;
-  }
-
-  for (const element of elements) {
-    for (const attribute of Array.from(element.attributes)) {
-      let value = attribute.value;
-      for (const [oldId, newId] of idMap) {
-        value = value.replace(new RegExp(`url\\(["']?#${escapeRegExp(oldId)}["']?\\)`, "g"), `url(#${newId})`);
-        if (value === `#${oldId}`) value = `#${newId}`;
-      }
-      if (attribute.name === "aria-labelledby" || attribute.name === "aria-describedby") {
-        value = value.split(/\s+/).map((id) => idMap.get(id) ?? id).join(" ");
-      }
-      if (value !== attribute.value) element.setAttribute(attribute.name, value);
-    }
-  }
-
-  svg.querySelectorAll("style").forEach((style) => {
-    let css = style.textContent ?? "";
-    for (const [oldId, newId] of idMap) {
-      css = css.replace(new RegExp(`#${escapeRegExp(oldId)}(?![\\w-])`, "g"), `#${newId}`);
-    }
-    style.textContent = css;
-  });
-}
+import {
+  diagramSize,
+  fitView,
+  panView,
+  pinchView,
+  Point,
+  remapSvgIds,
+  Size,
+  ViewState,
+  zoomView
+} from "./viewer-utils";
 
 export class MermaidViewerModal extends Modal {
   private readonly source: SVGSVGElement;
@@ -145,11 +91,9 @@ export class MermaidViewerModal extends Modal {
 
     const fitInternal = (): boolean => {
       if (stage.clientWidth <= 0 || stage.clientHeight <= 0) return false;
-      const width = Math.max(stage.clientWidth - 48, 1);
-      const height = Math.max(stage.clientHeight - 48, 1);
-      state.scale = clamp(Math.min(width / size.width, height / size.height), MIN_SCALE, MAX_SCALE);
-      state.x = (stage.clientWidth - size.width * state.scale) / 2;
-      state.y = (stage.clientHeight - size.height * state.scale) / 2;
+      const fitted = fitView({ width: stage.clientWidth, height: stage.clientHeight }, size);
+      if (!fitted) return false;
+      Object.assign(state, fitted);
       initialized = true;
       render();
       return true;
@@ -171,12 +115,7 @@ export class MermaidViewerModal extends Modal {
     const zoomAt = (factor: number, point?: Point): void => {
       if (!initialized && !fitInternal()) return;
       const anchor = point ?? { x: stage.clientWidth / 2, y: stage.clientHeight / 2 };
-      const diagramX = (anchor.x - state.x) / state.scale;
-      const diagramY = (anchor.y - state.y) / state.scale;
-      const nextScale = clamp(state.scale * factor, MIN_SCALE, MAX_SCALE);
-      state.scale = nextScale;
-      state.x = anchor.x - diagramX * nextScale;
-      state.y = anchor.y - diagramY * nextScale;
+      Object.assign(state, zoomView(state, factor, anchor));
       userChangedView = true;
       render();
     };
@@ -222,16 +161,9 @@ export class MermaidViewerModal extends Modal {
       const points = Array.from(pointers.values());
       if (points.length >= 2 && pinchStart) {
         const center = midpoint(points[0], points[1]);
-        state.scale = clamp(
-          pinchStart.scale * distance(points[0], points[1]) / pinchStart.distance,
-          MIN_SCALE,
-          MAX_SCALE
-        );
-        state.x = center.x - pinchStart.anchor.x * state.scale;
-        state.y = center.y - pinchStart.anchor.y * state.scale;
+        Object.assign(state, pinchView(pinchStart, distance(points[0], points[1]), center));
       } else if (points.length === 1 && panStart) {
-        state.x = panStart.x + points[0].x - panStart.pointer.x;
-        state.y = panStart.y + points[0].y - panStart.pointer.y;
+        Object.assign(state, panView(panStart, points[0]));
       }
       userChangedView = true;
       render();
