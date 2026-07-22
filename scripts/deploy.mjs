@@ -120,7 +120,7 @@ const { vault, includeNotes, openObsidian } = parseArguments(process.argv.slice(
 const manifest = JSON.parse(await readFile("manifest.json", "utf8"));
 const pluginDirectory = path.join(vault, ".obsidian", "plugins", manifest.id);
 const artifactNames = ["main.js", "manifest.json", "styles.css"];
-const acceptanceFile = "Mermaid Lens Tests/00-验收清单.md";
+const acceptanceFile = "Mermaid Lens Tests/00-验收清单";
 
 await mkdir(pluginDirectory, { recursive: true });
 await Promise.all(artifactNames.map((name) =>
@@ -139,9 +139,11 @@ if (includeNotes) console.log(`验收笔记已复制到：\n${path.join(vault, "
 
 if (openObsidian) {
   const vaultId = await registerVault(vault);
-  const parameters = new URLSearchParams({ vault: vaultId });
-  if (includeNotes) parameters.set("file", acceptanceFile);
-  await launchUri(`obsidian://open?${parameters.toString()}`);
+  // Obsidian requires RFC 3986 encoding here; URLSearchParams encodes spaces
+  // as `+`, which Obsidian treats as a literal plus sign in note paths.
+  let uri = `obsidian://open?vault=${encodeURIComponent(vaultId)}`;
+  if (includeNotes) uri += `&file=${encodeURIComponent(acceptanceFile)}`;
+  await launchUri(uri);
   console.log("\n已通过 Obsidian URI 打开该 Vault。若 Vault 已打开，Obsidian 会切换到验收笔记。");
 } else {
   console.log("\n请在 Obsidian 中打开该 Vault，然后启用或重新加载 Mermaid Lens。");
