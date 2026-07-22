@@ -19,13 +19,13 @@ npm test
 npm run build
 ```
 
-将下面三个文件复制到 Vault：
+构建产物会生成在 `dist/` 目录。将其中三个文件复制到 Vault：
 
 ```text
 <Vault>/.obsidian/plugins/mermaid-lens/
-├── main.js
-├── manifest.json
-└── styles.css
+├── main.js       # dist/main.js
+├── manifest.json # dist/manifest.json
+└── styles.css    # dist/styles.css
 ```
 
 然后在 Obsidian 的“设置 → 第三方插件”中重新加载并启用 **Mermaid Lens**。

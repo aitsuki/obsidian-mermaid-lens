@@ -2,7 +2,7 @@
   "name": "obsidian-mermaid-lens",
   "version": "0.2.0",
   "description": "Global Mermaid configuration and a pan/zoom viewer for Obsidian.",
-  "main": "main.js",
+  "main": "dist/main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
     "test": "tsx --test tests/*.test.ts",
