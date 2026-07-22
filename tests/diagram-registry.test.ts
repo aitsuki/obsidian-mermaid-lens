@@ -64,6 +64,21 @@ describe("DiagramRegistry", () => {
     expect(open).not.toHaveBeenCalled();
   });
 
+  it("mounts diagrams whose SVG is rendered asynchronously", async () => {
+    const { root, host } = fixture(false);
+    const open = vi.fn();
+    const registry = new DiagramRegistry(new App(), {
+      getTrigger: () => "single",
+      showExpandButton: () => true
+    }, open);
+    registry.scan(root);
+    host.innerHTML = '<svg viewBox="0 0 100 100"></svg>';
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(host.classList.contains("mermaid-lens-host")).toBe(true);
+    expect(host.querySelector(".mermaid-lens-expand")).not.toBeNull();
+    registry.disposeAll();
+  });
+
   it("opens from the expand button regardless of trigger", () => {
     const { root, host } = fixture();
     const open = vi.fn();

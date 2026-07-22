@@ -127,7 +127,7 @@ describe("MermaidLensPlugin", () => {
     vi.useFakeTimers();
     const plugin = pluginWithWorkspace();
     const manager = { dispose: vi.fn() };
-    const registry = { dispose: vi.fn() };
+    const registry = { dispose: vi.fn(), disposeAll: vi.fn() };
     (plugin as any).configManager = manager;
     (plugin as any).registry = registry;
     (plugin as any).loaded = true;
@@ -135,6 +135,7 @@ describe("MermaidLensPlugin", () => {
     plugin.onunload();
     expect(vi.getTimerCount()).toBe(0);
     expect(registry.dispose).toHaveBeenCalled();
+    expect(registry.disposeAll).toHaveBeenCalled();
     expect(manager.dispose).toHaveBeenCalled();
   });
 });

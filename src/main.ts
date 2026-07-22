@@ -73,6 +73,7 @@ export default class MermaidLensPlugin extends Plugin {
     this.clearTimers();
     const roots = this.getMarkdownRoots();
     this.registry?.dispose(roots);
+    this.registry?.disposeAll();
     this.registry = undefined;
     this.configManager.dispose();
   }

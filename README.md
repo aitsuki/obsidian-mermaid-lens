@@ -7,7 +7,7 @@
 - 全局 Mermaid JSON 配置，不必在每个代码块中写 `%%{init}%%`
 - 默认内置紫色 sequenceDiagram 主题和 `sequence.useMaxWidth: true`
 - 配置深度合并：插件配置覆盖 Obsidian 的同名 Mermaid 配置
-- 单击、双击或展开按钮打开大图（默认双击）
+- 单击、双击或展开按钮打开大图（默认单击）
 - 拖拽平移、光标中心滚轮缩放、移动端双指缩放、双击适配窗口
 - 图表始终限制在笔记宽度内
 

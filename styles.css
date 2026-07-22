@@ -3,13 +3,20 @@
   overflow-x: auto;
 }
 
-.mermaid-lens-host[data-mermaid-lens-trigger="single"],
-.mermaid-lens-host[data-mermaid-lens-trigger="double"] {
+.mermaid-lens-host[data-mermaid-lens-trigger="single"] {
   cursor: zoom-in;
 }
 
-.mermaid-lens-host > svg {
-  max-width: 100% !important;
+/*
+ * Apply before the registry mounts, including SVGs nested in Obsidian wrappers.
+ * Do not override Mermaid's inline pixel max-width: doing so stretches small
+ * diagrams to the full note width. `width: auto` keeps their intrinsic size,
+ * while the fallback max-width still constrains genuinely large diagrams.
+ */
+.mermaid svg,
+.mermaid-preview svg {
+  width: auto;
+  max-width: 100%;
   height: auto;
 }
 
@@ -17,7 +24,8 @@
   position: absolute;
   z-index: 5;
   top: 6px;
-  right: 6px;
+  /* Leave Obsidian's edit-block button unobstructed at the far right. */
+  right: 42px;
   width: 30px;
   height: 30px;
   padding: 6px;

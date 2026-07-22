@@ -36,7 +36,7 @@ export const DEFAULT_CONFIG = {
 
 export const DEFAULT_SETTINGS: MermaidLensSettings = {
   configJson: JSON.stringify(DEFAULT_CONFIG, null, 2),
-  openTrigger: "double",
+  openTrigger: "single",
   showExpandButton: true
 };
 
@@ -112,7 +112,7 @@ export class MermaidLensSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("打开大图的操作")
-      .setDesc("推荐双击，图中的链接和按钮不会触发大图。")
+      .setDesc("默认单击打开；图中的链接和按钮不会触发大图。")
       .addDropdown((dropdown) => dropdown
         .addOption("single", "单击图表")
         .addOption("double", "双击图表")

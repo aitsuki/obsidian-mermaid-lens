@@ -12,6 +12,7 @@ import { DEFAULT_SETTINGS, MermaidLensSettingTab, normalizeSettings } from "../s
 
 describe("normalizeSettings", () => {
   it("uses defaults for null, missing, and invalid values", () => {
+    expect(DEFAULT_SETTINGS.openTrigger).toBe("single");
     expect(normalizeSettings(null)).toEqual(DEFAULT_SETTINGS);
     expect(normalizeSettings({ openTrigger: "invalid" as never, configJson: 1 as never, showExpandButton: "yes" as never }))
       .toEqual(DEFAULT_SETTINGS);
