@@ -1,0 +1,23 @@
+{
+  "name": "obsidian-mermaid-lens",
+  "version": "0.2.0",
+  "description": "Global Mermaid configuration and a pan/zoom viewer for Obsidian.",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "test": "tsx --test tests/*.test.ts",
+    "build": "tsc --noEmit && node esbuild.config.mjs production"
+  },
+  "keywords": ["obsidian", "mermaid"],
+  "author": "aitsuki",
+  "repository": "github:aitsuki/obsidian-mermaid-lens",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "builtin-modules": "^4.0.0",
+    "esbuild": "^0.28.1",
+    "obsidian": "latest",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
