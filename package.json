@@ -1,6 +1,6 @@
 {
   "name": "obsidian-mermaid-lens",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Global Mermaid configuration and a pan/zoom viewer for Obsidian.",
   "main": "dist/main.js",
   "scripts": {

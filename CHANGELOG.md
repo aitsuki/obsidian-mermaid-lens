@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-07-23
 ### Added
 
 - Added English and Simplified Chinese interfaces that follow Obsidian's configured language.
@@ -15,4 +16,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Fixed the alignment and responsive width of the Mermaid JSON configuration editor.
 
-[Unreleased]: https://github.com/aitsuki/obsidian-mermaid-lens/compare/0.2.2...HEAD
+[Unreleased]: https://github.com/aitsuki/obsidian-mermaid-lens/compare/0.2.3...HEAD
+[0.2.3]: https://github.com/aitsuki/obsidian-mermaid-lens/compare/0.2.2...0.2.3
