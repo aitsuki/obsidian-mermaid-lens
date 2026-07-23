@@ -85,6 +85,7 @@ describe("MermaidLensSettingTab", () => {
     await apply.onClickHandler?.();
     expect(plugin.applyConfig).toHaveBeenCalledWith('{"theme":"forest"}');
     expect(settingComponents).toHaveLength(5);
+    expect(tab.containerEl.querySelector(".mermaid-lens-config-setting")).not.toBeNull();
   });
 
   it("applies the edited draft and reports success", async () => {

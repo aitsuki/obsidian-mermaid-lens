@@ -59,9 +59,11 @@ export class ToggleComponent extends Component<boolean> {}
 export const settingComponents: Array<TextAreaComponent | ButtonComponent | DropdownComponent | ToggleComponent> = [];
 
 export class Setting {
-  constructor(public containerEl: HTMLElement) {}
+  settingEl = document.createElement("div");
+  constructor(public containerEl: HTMLElement) { containerEl.appendChild(this.settingEl); }
   setName(): this { return this; }
   setDesc(): this { return this; }
+  setClass(cls: string): this { this.settingEl.classList.add(cls); return this; }
   addTextArea(callback: (component: TextAreaComponent) => unknown): this {
     const component = new TextAreaComponent(); settingComponents.push(component); callback(component); return this;
   }

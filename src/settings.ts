@@ -132,6 +132,7 @@ export class MermaidLensSettingTab extends PluginSettingTab {
   }
 
   private renderConfigInput(setting: Setting): void {
+    setting.setClass("mermaid-lens-config-setting");
     this.draftConfig = this.plugin.settings.configJson;
     setting.addTextArea((text) => {
       this.configInput = text;

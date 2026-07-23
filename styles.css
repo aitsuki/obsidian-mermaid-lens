@@ -120,9 +120,24 @@
   will-change: transform;
 }
 
+.mermaid-lens-config-setting {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.mermaid-lens-config-setting .setting-item-info,
+.mermaid-lens-config-setting .setting-item-control {
+  width: 100%;
+}
+
+.mermaid-lens-config-setting .setting-item-control {
+  justify-content: flex-start;
+}
+
 .mermaid-lens-config-input {
-  width: min(100%, 760px);
-  min-width: min(70vw, 760px);
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   resize: vertical;
   font-family: var(--font-monospace);
   font-size: var(--font-ui-smaller);
