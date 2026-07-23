@@ -21,27 +21,24 @@ https://github.com/user-attachments/assets/056c7e1b-5d88-4508-99bb-ded31a615efd
 
 ## 安装
 
-目前可以从源码构建插件：
+需要 Obsidian 1.12.0 或更高版本。
 
-```bash
-npm install
-npm run build
-```
+### 社区插件市场
 
-构建完成后，将 `dist/` 中的三个文件复制到 Vault 的插件目录：
+1. 打开“设置 → 第三方插件”，关闭受限模式。
+2. 选择“浏览”，搜索 **Mermaid Lens**。
+3. 安装并启用插件。
 
-```text
-<Vault>/.obsidian/plugins/mermaid-lens/
-├── main.js
-├── manifest.json
-└── styles.css
-```
+### 手动安装
 
-然后打开 Obsidian：
+1. 从 [GitHub Releases](https://github.com/aitsuki/obsidian-mermaid-lens/releases) 下载 `main.js`、`manifest.json` 和 `styles.css`。
+2. 将三个文件放入以下目录：
 
-1. 进入“设置 → 第三方插件”。
-2. 重新加载已安装插件。
-3. 启用 **Mermaid Lens**。
+   ```text
+   <Vault>/.obsidian/plugins/mermaid-lens/
+   ```
+
+3. 重新加载 Obsidian，然后在“设置 → 第三方插件”中启用 **Mermaid Lens**。
 
 ## 使用
 
@@ -102,66 +99,9 @@ sequenceDiagram
 
 编辑框中的内容只是草稿。只有点击“应用并重绘”且配置通过验证后，插件才会保存并重绘当前打开的 Mermaid 图表。“恢复默认配置”可以随时恢复插件自带的初始设置。
 
-## 开发
+## 开发与贡献
 
-### 常用命令
-
-```bash
-npm install
-npm test
-npm run test:coverage
-npm run build
-```
-
-- `npm test`：运行单元测试和 DOM 行为测试。
-- `npm run test:coverage`：运行测试并检查覆盖率门槛。
-- `npm run build`：执行 TypeScript 检查并生成 `dist/` 构建产物。
-
-### 在真实 Obsidian 中验收
-
-项目提供了本地测试 Vault 和多维度验收笔记。运行：
-
-```bash
-npm run deploy
-```
-
-该命令会：
-
-1. 构建插件。
-2. 创建被 Git 忽略的 `ObsidianTestVault/`。
-3. 将插件部署到 `ObsidianTestVault/.obsidian/plugins/mermaid-lens/`。
-4. 将验收笔记复制到 `ObsidianTestVault/Mermaid Lens Tests/`。
-5. 注册测试 Vault，并通过 Obsidian URI 打开 Vault 和验收清单。
-
-验收笔记包含简单、中等复杂度和大型图表，覆盖流程图、时序图、状态图、类图、ER 图、图中链接、重复 SVG ID 和超宽图表。
-
-部署到其他测试 Vault：
-
-```bash
-npm run deploy -- --vault "C:\path\to\vault"
-```
-
-不复制验收笔记：
-
-```bash
-npm run deploy -- --vault "C:\path\to\vault" --no-notes
-```
-
-只部署，不打开 Obsidian：
-
-```bash
-npm run deploy -- --no-open
-```
-
-修改代码后需要重新部署，并在 Obsidian 中重新加载或禁用后再次启用插件。可以按 `Ctrl+Shift+I` 打开开发者工具检查 Console。
-
-## 实现概览
-
-- 插件在 Obsidian 加载 Mermaid 时合并全局配置，并在卸载时恢复原始配置。
-- 图表通过 DOM 变化监听自动登记，因此渲染耗时较长的图表也能获得查看器入口。
-- 查看器会等待弹窗完成布局，并在窗口尺寸变化时重新计算适配状态。
-- 查看器中的 SVG 克隆会重写内部 ID，避免 marker、filter 和 gradient 与笔记中的原图冲突。
-- 应用配置时会保留编辑器的光标和滚动位置，并仅重绘包含 Mermaid 的 Markdown 视图。
+源码构建、测试和验收流程请参阅 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 兼容性说明
 
