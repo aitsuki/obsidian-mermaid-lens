@@ -32,7 +32,7 @@ npm run build
 - `npm run typecheck:test`：检查源码和测试代码的 TypeScript 类型。
 - `npm run build`：执行源码与测试类型检查，并在 `dist/` 中生成生产构建。
 
-为兼容当前公开稳定版 Obsidian 1.12，设置页继续使用 `PluginSettingTab.display()`。因此 lint 会报告两条与 Obsidian 1.13 声明式设置 API 有关的预期警告；它们不阻塞构建或插件市场审核。不要仅为消除这两条警告而提高 `minAppVersion`。
+为兼容 Obsidian 1.12，设置页保留 `PluginSettingTab.display()` 作为回退，同时为 Obsidian 1.13 及更高版本提供可搜索的声明式设置定义。不要仅为采用新 API 而提高 `minAppVersion`。
 
 生产构建包含：
 
@@ -100,15 +100,17 @@ npm run deploy -- --no-open
 
 ## 发布
 
+发行说明使用英文维护在 `CHANGELOG.md` 的 `[Unreleased]` 部分，并按 `Added`、`Changed`、`Fixed` 等面向用户的类别组织。准备发布前，应先更新并提交该部分。
+
 ```bash
-# 发布 release，自动更新版本号、运行 lint、测试与构建，提交版本变更并创建同名 annotated tag
+# 将 Unreleased 内容归档到目标版本，更新版本号，运行检查，提交版本变更并创建同名 annotated tag
 npm run release -- <tag>
 
-# 推送提交和tag
+# 推送提交和 tag
 git push --atomic origin main refs/tags/<tag>
 ```
 
-GitHub Actions 会在 tag 推送后重新验证版本，运行 lint、测试与构建，为 `main.js` 和 `styles.css` 生成 GitHub artifact attestations，生成发行说明，并发布带有 `main.js`、`manifest.json` 和 `styles.css` 的 GitHub Release。
+发布脚本会拒绝空的 `[Unreleased]` 内容，并检查能否提取目标版本的发行说明。GitHub Actions 会在 tag 推送后重新验证版本，从 `CHANGELOG.md` 提取英文发行说明，运行 lint、测试与构建，为 `main.js` 和 `styles.css` 生成 GitHub artifact attestations，并发布带有 `main.js`、`manifest.json` 和 `styles.css` 的 GitHub Release。
 
 ## 提交前检查
 

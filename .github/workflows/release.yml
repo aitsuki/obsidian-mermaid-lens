@@ -41,6 +41,9 @@ jobs:
             exit 1
           fi
 
+      - name: Prepare release notes
+        run: node scripts/extract-release-notes.mjs "$GITHUB_REF_NAME" > release-notes.md
+
       - name: Lint
         run: npm run lint
 
@@ -63,8 +66,8 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" \
             --verify-tag \
-            --title "$GITHUB_REF_NAME" \
-            --generate-notes \
+            --title "Mermaid Lens $GITHUB_REF_NAME" \
+            --notes-file release-notes.md \
             dist/main.js \
             dist/manifest.json \
             dist/styles.css
