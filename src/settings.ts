@@ -68,7 +68,6 @@ export class MermaidLensSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     this.draftConfig = this.plugin.settings.configJson;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Mermaid Lens" });
 
     new Setting(containerEl)
       .setName("全局 Mermaid 配置")

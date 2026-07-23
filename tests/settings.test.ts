@@ -62,7 +62,7 @@ describe("MermaidLensSettingTab", () => {
     await apply.onClickHandler?.();
     expect(plugin.applyConfig).toHaveBeenCalledWith('{"theme":"forest"}');
     expect(notices).toContain("Mermaid 配置已应用");
-    expect(tab.containerEl.querySelector("h2")?.textContent).toBe("Mermaid Lens");
+    expect(tab.containerEl.querySelector("h2")).toBeNull();
   });
 
   it("reports apply and reset failures and can restore defaults", async () => {

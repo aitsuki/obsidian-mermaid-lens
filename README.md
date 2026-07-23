@@ -165,4 +165,7 @@ npm run deploy -- --no-open
 
 ## 兼容性说明
 
+- 最低支持 Obsidian 1.12.0。
+- 支持桌面端和移动端。
+
 Mermaid Lens 会调整 Obsidian 使用的共享 Mermaid 配置。如果同时启用其他会修改 Mermaid 主题或初始化配置的插件，最终效果可能受插件加载顺序影响。建议避免同时启用功能重叠的 Mermaid 配置插件。
