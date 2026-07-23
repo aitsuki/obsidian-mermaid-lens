@@ -22,6 +22,8 @@ export const DEFAULT_CONFIG = {
     actorBkg: "#6366F1",
     actorBorder: "#4F46E5",
     actorTextColor: "#FFFFFF",
+    labelTextColor: "#FFFFFF",
+    loopTextColor: "#334155",
     noteBkgColor: "#FEF3C7",
     noteBorderColor: "#F59E0B",
     noteTextColor: "#78350F"

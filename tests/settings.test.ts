@@ -8,7 +8,15 @@ import {
   TextAreaComponent,
   ToggleComponent
 } from "obsidian";
-import { DEFAULT_SETTINGS, MermaidLensSettingTab, normalizeSettings } from "../src/settings";
+import { DEFAULT_CONFIG, DEFAULT_SETTINGS, MermaidLensSettingTab, normalizeSettings } from "../src/settings";
+
+describe("default Mermaid config", () => {
+  it("keeps sequence branch descriptions visible outside the label box", () => {
+    expect(DEFAULT_CONFIG.themeVariables.labelTextColor).toBe("#FFFFFF");
+    expect(DEFAULT_CONFIG.themeVariables.loopTextColor).toBe("#334155");
+    expect(DEFAULT_CONFIG.themeVariables.loopTextColor).not.toBe(DEFAULT_CONFIG.themeVariables.actorTextColor);
+  });
+});
 
 describe("normalizeSettings", () => {
   it("uses defaults for null, missing, and invalid values", () => {
