@@ -2,6 +2,13 @@
 
 Mermaid Lens 是一个 Obsidian 插件，用于统一设置笔记中的 Mermaid 图表，并在独立查看器中浏览尺寸较大或内容复杂的图表。
 
+| zoom out | zoom in |
+| --- | ---|
+| <img width="1920" height="1032" alt="zoom_out" src="https://github.com/user-attachments/assets/8c4a4d00-4f26-43dc-ad41-5b1870aae718" /> | <img width="1920" height="1032" alt="zoom_in_popup" src="https://github.com/user-attachments/assets/2bf8285c-4b39-4736-8de6-e46cb684e918" /> |
+
+https://github.com/user-attachments/assets/056c7e1b-5d88-4508-99bb-ded31a615efd
+
+
 ## 主要功能
 
 - **统一图表外观**：在插件设置中集中调整 Mermaid 的主题、颜色、字体、间距和布局参数，配置会应用到整个 Vault 中的 Mermaid 图表。
