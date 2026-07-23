@@ -9,7 +9,8 @@
     "test:coverage": "vitest run --coverage",
     "typecheck:test": "tsc --noEmit -p tsconfig.tests.json",
     "build": "tsc --noEmit && npm run typecheck:test && node esbuild.config.mjs production",
-    "deploy": "npm run build && node scripts/deploy.mjs"
+    "deploy": "npm run build && node scripts/deploy.mjs",
+    "release": "node scripts/prepare-release.mjs"
   },
   "keywords": [
     "obsidian",

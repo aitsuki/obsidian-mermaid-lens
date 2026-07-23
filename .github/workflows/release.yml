@@ -5,6 +5,10 @@ on:
     tags:
       - "*"
 
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -22,29 +26,33 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify tag version
+        shell: bash
+        run: |
+          manifest_version="$(node -p "require('./manifest.json').version")"
+          if [ "$GITHUB_REF_NAME" != "$manifest_version" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match manifest version $manifest_version"
+            exit 1
+          fi
+          if ! [[ "$GITHUB_REF_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Version must use the x.y.z format"
+            exit 1
+          fi
+
       - name: Test
         run: npm run test:coverage
 
       - name: Build
         run: npm run build
 
-      - name: Verify tag version
-        shell: bash
-        run: |
-          version="$(node -p "require('./manifest.json').version")"
-          if [ "$GITHUB_REF_NAME" != "$version" ]; then
-            echo "Tag $GITHUB_REF_NAME does not match manifest version $version"
-            exit 1
-          fi
-
-      - name: Create draft release
+      - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$GITHUB_REF_NAME" \
             --verify-tag \
             --title "$GITHUB_REF_NAME" \
-            --draft \
+            --generate-notes \
             dist/main.js \
             dist/manifest.json \
             dist/styles.css

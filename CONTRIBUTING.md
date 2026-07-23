@@ -94,6 +94,18 @@ npm run deploy -- --no-open
 - 查看器中的 SVG 克隆会重写内部 ID，避免 marker、filter 和 gradient 与笔记中的原图冲突。
 - 应用配置时会保留编辑器的光标和滚动位置，并仅重绘包含 Mermaid 的 Markdown 视图。
 
+## 发布
+
+```bash
+# 发布 release，自动更新版本号、运行测试与构建，提交版本变更并创建同名 annotated tag
+npm run release -- <tag>
+
+# 推送提交和tag
+git push --atomic origin main refs/tags/<tag>
+```
+
+GitHub Actions 会在 tag 推送后重新验证版本、运行测试与构建、生成发行说明，并发布带有 `main.js`、`manifest.json` 和 `styles.css` 的 GitHub Release。
+
 ## 提交前检查
 
 ```bash
