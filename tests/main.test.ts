@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { MarkdownView, notices } from "obsidian";
+import { App, MarkdownView, notices } from "./mocks/obsidian";
 import MermaidLensPlugin from "../src/main";
 import { DEFAULT_SETTINGS } from "../src/settings";
 
@@ -14,7 +14,7 @@ function workspace(views: unknown[] = []) {
 }
 
 function pluginWithWorkspace(views: unknown[] = []) {
-  const plugin = new MermaidLensPlugin() as MermaidLensPlugin & { app: any };
+  const plugin = new MermaidLensPlugin(new App() as never, {} as never) as MermaidLensPlugin & { app: any };
   plugin.app.workspace = workspace(views);
   return plugin;
 }
@@ -24,6 +24,7 @@ describe("MermaidLensPlugin", () => {
     notices.length = 0;
     vi.useRealTimers();
     vi.restoreAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   it("loads and normalizes saved settings", async () => {

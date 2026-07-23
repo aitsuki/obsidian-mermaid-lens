@@ -7,7 +7,7 @@ import {
   settingComponents,
   TextAreaComponent,
   ToggleComponent
-} from "obsidian";
+} from "./mocks/obsidian";
 import { DEFAULT_CONFIG, DEFAULT_SETTINGS, MermaidLensSettingTab, normalizeSettings } from "../src/settings";
 
 describe("default Mermaid config", () => {
@@ -40,6 +40,7 @@ describe("MermaidLensSettingTab", () => {
     settingComponents.length = 0;
     notices.length = 0;
     vi.restoreAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   function display() {
@@ -49,7 +50,7 @@ describe("MermaidLensSettingTab", () => {
       saveSettings: vi.fn().mockResolvedValue(undefined),
       refreshDiagramControls: vi.fn()
     };
-    const tab = new MermaidLensSettingTab(new App(), plugin as never);
+    const tab = new MermaidLensSettingTab(new App() as never, plugin as never);
     tab.display();
     return { plugin, tab };
   }
@@ -78,7 +79,7 @@ describe("MermaidLensSettingTab", () => {
     expect(plugin.applyConfig).toHaveBeenLastCalledWith(DEFAULT_SETTINGS.configJson);
     expect(notices).toContain("已恢复默认 Mermaid 配置");
 
-    const nextReset = settingComponents.at(-3) as ButtonComponent;
+    const nextReset = settingComponents[settingComponents.length - 3] as ButtonComponent;
     plugin.applyConfig.mockRejectedValueOnce(new Error("failed"));
     await nextReset.onClickHandler?.();
     expect(notices).toContain("恢复默认配置失败，请查看开发者控制台");
