@@ -1,4 +1,5 @@
 import { App, Modal, setIcon } from "obsidian";
+import { t } from "./i18n";
 import {
   diagramSize,
   fitView,
@@ -28,7 +29,7 @@ export class MermaidViewerModal extends Modal {
     toolbar.createDiv({ cls: "mermaid-lens-title", text: "Mermaid" });
     toolbar.createDiv({
       cls: "mermaid-lens-help",
-      text: "拖拽移动 · 滚轮/双指缩放 · 双击适配 · Esc 关闭"
+      text: t("viewer.help")
     });
 
     const controls = toolbar.createDiv({ cls: "mermaid-lens-controls" });
@@ -47,9 +48,9 @@ export class MermaidViewerModal extends Modal {
 
     const handlers = this.setupPanZoom(stage, svg, size);
     this.cleanup = handlers.cleanup;
-    this.makeButton(controls, "zoom-out", "缩小", () => handlers.zoom(1 / 1.2));
-    this.makeButton(controls, "scan", "适配窗口", handlers.fit);
-    this.makeButton(controls, "zoom-in", "放大", () => handlers.zoom(1.2));
+    this.makeButton(controls, "zoom-out", t("viewer.zoomOut"), () => handlers.zoom(1 / 1.2));
+    this.makeButton(controls, "scan", t("viewer.fit"), handlers.fit);
+    this.makeButton(controls, "zoom-in", t("viewer.zoomIn"), () => handlers.zoom(1.2));
 
     this.scope.register([], "+", () => { handlers.zoom(1.2); return false; });
     this.scope.register([], "=", () => { handlers.zoom(1.2); return false; });

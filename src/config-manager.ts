@@ -1,5 +1,6 @@
 import { loadMermaid } from "obsidian";
 import { MermaidConfig, mergeConfig } from "./config-utils";
+import { t } from "./i18n";
 
 export { parseConfigJson } from "./config-utils";
 
@@ -76,7 +77,7 @@ export class MermaidConfigManager {
 
   apply(config: MermaidConfig): void {
     if (!this.api || !this.originalInitialize || !this.active) {
-      throw new Error("Mermaid 配置管理器尚未初始化");
+      throw new Error(t("error.managerNotInitialized"));
     }
 
     const previous = this.customConfig;

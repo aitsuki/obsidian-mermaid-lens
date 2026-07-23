@@ -1,6 +1,7 @@
 import { MarkdownView, Notice, Plugin } from "obsidian";
 import { MermaidConfigManager, parseConfigJson } from "./config-manager";
 import { DiagramRegistry } from "./diagram-registry";
+import { t } from "./i18n";
 import {
   DEFAULT_SETTINGS,
   MermaidLensSettings,
@@ -33,7 +34,7 @@ export default class MermaidLensPlugin extends Plugin {
     } catch (error) {
       initialConfigJson = DEFAULT_SETTINGS.configJson;
       initialConfig = parseConfigJson(initialConfigJson);
-      new Notice("保存的 Mermaid 配置无效，本次使用默认配置");
+      new Notice(t("notice.savedConfigInvalid"));
       console.error("[mermaid-lens] Invalid saved config", error);
     }
 
@@ -42,7 +43,7 @@ export default class MermaidLensPlugin extends Plugin {
       this.activeConfigJson = initialConfigJson;
     } catch (error) {
       console.error("[mermaid-lens] Failed to apply saved config", error);
-      new Notice("Mermaid 配置无法应用，已尝试恢复默认配置");
+      new Notice(t("notice.applySavedConfigFailed"));
       await this.configManager.install(parseConfigJson(DEFAULT_SETTINGS.configJson));
       this.activeConfigJson = DEFAULT_SETTINGS.configJson;
     }

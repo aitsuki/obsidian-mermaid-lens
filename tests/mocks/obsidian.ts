@@ -1,3 +1,8 @@
+let language = "zh-CN";
+
+export function getLanguage(): string { return language; }
+export function setLanguage(value: string): void { language = value; }
+
 export class App {
   workspace: any;
   constructor(workspace: any = {}) { this.workspace = workspace; }

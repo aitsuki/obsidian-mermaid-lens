@@ -1,4 +1,5 @@
 import { App, setIcon } from "obsidian";
+import { t } from "./i18n";
 import type { OpenTrigger } from "./settings";
 import { MermaidViewerModal } from "./viewer";
 
@@ -131,7 +132,7 @@ export class DiagramRegistry {
 
     button = host.createEl("button", {
       cls: "mermaid-lens-expand",
-      attr: { "aria-label": "打开 Mermaid 大图", title: "打开大图" }
+      attr: { "aria-label": t("diagram.openViewer"), title: t("diagram.openLarge") }
     });
     setIcon(button, "expand");
     button.addEventListener("click", (event) => {

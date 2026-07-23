@@ -1,3 +1,5 @@
+import { t } from "./i18n";
+
 export type MermaidConfig = Record<string, unknown>;
 
 const BLOCKED_KEYS = new Set(["__proto__", "prototype", "constructor"]);
@@ -22,6 +24,6 @@ export function mergeConfig(base: MermaidConfig, override: MermaidConfig): Merma
 
 export function parseConfigJson(value: string): MermaidConfig {
   const parsed: unknown = JSON.parse(value);
-  if (!isPlainObject(parsed)) throw new Error("配置必须是 JSON 对象");
+  if (!isPlainObject(parsed)) throw new Error(t("error.configMustBeObject"));
   return parsed;
 }
