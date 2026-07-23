@@ -4,6 +4,7 @@ import {
   ButtonComponent,
   DropdownComponent,
   notices,
+  Setting,
   settingComponents,
   TextAreaComponent,
   ToggleComponent
@@ -55,6 +56,37 @@ describe("MermaidLensSettingTab", () => {
     return { plugin, tab };
   }
 
+  it("provides searchable 1.13 definitions that render the existing controls", async () => {
+    const plugin = {
+      settings: { ...DEFAULT_SETTINGS },
+      applyConfig: vi.fn().mockResolvedValue(undefined),
+      saveSettings: vi.fn().mockResolvedValue(undefined),
+      refreshDiagramControls: vi.fn()
+    };
+    const tab = new MermaidLensSettingTab(new App() as never, plugin as never);
+    const definitions = tab.getSettingDefinitions();
+
+    expect(definitions.map((definition) => "name" in definition ? definition.name : undefined)).toEqual([
+      "全局 Mermaid 配置",
+      "应用配置",
+      "打开大图的操作",
+      "显示展开按钮"
+    ]);
+
+    for (const definition of definitions) {
+      if ("render" in definition && typeof definition.render === "function") {
+        definition.render(new Setting(tab.containerEl) as never, {} as never);
+      }
+    }
+
+    const text = settingComponents[0] as TextAreaComponent;
+    const apply = settingComponents[1] as ButtonComponent;
+    await text.onChangeHandler?.('{"theme":"forest"}');
+    await apply.onClickHandler?.();
+    expect(plugin.applyConfig).toHaveBeenCalledWith('{"theme":"forest"}');
+    expect(settingComponents).toHaveLength(5);
+  });
+
   it("applies the edited draft and reports success", async () => {
     const { plugin, tab } = display();
     const text = settingComponents[0] as TextAreaComponent;
@@ -79,9 +111,10 @@ describe("MermaidLensSettingTab", () => {
     expect(plugin.applyConfig).toHaveBeenLastCalledWith(DEFAULT_SETTINGS.configJson);
     expect(notices).toContain("已恢复默认 Mermaid 配置");
 
-    const nextReset = settingComponents[settingComponents.length - 3] as ButtonComponent;
+    expect((settingComponents[0] as TextAreaComponent).value).toBe(DEFAULT_SETTINGS.configJson);
+
     plugin.applyConfig.mockRejectedValueOnce(new Error("failed"));
-    await nextReset.onClickHandler?.();
+    await reset.onClickHandler?.();
     expect(notices).toContain("恢复默认配置失败，请查看开发者控制台");
   });
 

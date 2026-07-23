@@ -1,4 +1,5 @@
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
+import type { SettingDefinitionItem, TextAreaComponent } from "obsidian";
 import type MermaidLensPlugin from "./main";
 
 export type OpenTrigger = "single" | "double" | "button";
@@ -58,34 +59,90 @@ export function normalizeSettings(value: Partial<MermaidLensSettings> | null): M
 export class MermaidLensSettingTab extends PluginSettingTab {
   private readonly plugin: MermaidLensPlugin;
   private draftConfig = "";
+  private configInput?: TextAreaComponent;
 
   constructor(app: App, plugin: MermaidLensPlugin) {
     super(app, plugin);
     this.plugin = plugin;
   }
 
+  getSettingDefinitions(): SettingDefinitionItem[] {
+    return [
+      {
+        name: "全局 Mermaid 配置",
+        desc: "填写 Mermaid initialize() 使用的 JSON。只有点击“应用并重绘”后才会保存。",
+        aliases: ["Mermaid JSON", "initialize"],
+        render: (setting) => this.renderConfigInput(setting)
+      },
+      {
+        name: "应用配置",
+        desc: "验证配置；Mermaid 接受后才保存并重绘。",
+        aliases: ["应用并重绘", "恢复默认配置"],
+        render: (setting) => this.renderConfigActions(setting)
+      },
+      {
+        name: "打开大图的操作",
+        desc: "默认单击打开；图中的链接和按钮不会触发大图。",
+        aliases: ["单击图表", "双击图表", "展开按钮"],
+        render: (setting) => this.renderOpenTrigger(setting)
+      },
+      {
+        name: "显示展开按钮",
+        desc: "在 Mermaid 图右上角显示展开按钮。",
+        aliases: ["大图", "查看器"],
+        render: (setting) => this.renderExpandButtonToggle(setting)
+      }
+    ];
+  }
+
   display(): void {
     const { containerEl } = this;
-    this.draftConfig = this.plugin.settings.configJson;
     containerEl.empty();
 
-    new Setting(containerEl)
-      .setName("全局 Mermaid 配置")
-      .setDesc("填写 Mermaid initialize() 使用的 JSON。只有点击“应用并重绘”后才会保存。")
-      .addTextArea((text) => {
-        text
-          .setValue(this.draftConfig)
-          .setPlaceholder("{\n  \"theme\": \"base\"\n}")
-          .onChange((value) => {
-            this.draftConfig = value;
-          });
-        text.inputEl.rows = 24;
-        text.inputEl.addClass("mermaid-lens-config-input");
-      });
+    this.renderLegacySetting(
+      "全局 Mermaid 配置",
+      "填写 Mermaid initialize() 使用的 JSON。只有点击“应用并重绘”后才会保存。",
+      (setting) => this.renderConfigInput(setting)
+    );
+    this.renderLegacySetting(
+      "应用配置",
+      "验证配置；Mermaid 接受后才保存并重绘。",
+      (setting) => this.renderConfigActions(setting)
+    );
+    this.renderLegacySetting(
+      "打开大图的操作",
+      "默认单击打开；图中的链接和按钮不会触发大图。",
+      (setting) => this.renderOpenTrigger(setting)
+    );
+    this.renderLegacySetting(
+      "显示展开按钮",
+      "在 Mermaid 图右上角显示展开按钮。",
+      (setting) => this.renderExpandButtonToggle(setting)
+    );
+  }
 
-    new Setting(containerEl)
-      .setName("应用配置")
-      .setDesc("验证配置；Mermaid 接受后才保存并重绘。")
+  private renderLegacySetting(name: string, desc: string, render: (setting: Setting) => void): void {
+    const setting = new Setting(this.containerEl).setName(name).setDesc(desc);
+    render(setting);
+  }
+
+  private renderConfigInput(setting: Setting): void {
+    this.draftConfig = this.plugin.settings.configJson;
+    setting.addTextArea((text) => {
+      this.configInput = text;
+      text
+        .setValue(this.draftConfig)
+        .setPlaceholder("{\n  \"theme\": \"base\"\n}")
+        .onChange((value) => {
+          this.draftConfig = value;
+        });
+      text.inputEl.rows = 24;
+      text.inputEl.addClass("mermaid-lens-config-input");
+    });
+  }
+
+  private renderConfigActions(setting: Setting): void {
+    setting
       .addButton((button) => button
         .setButtonText("应用并重绘")
         .setCta()
@@ -103,37 +160,36 @@ export class MermaidLensSettingTab extends PluginSettingTab {
         .onClick(async () => {
           try {
             await this.plugin.applyConfig(DEFAULT_SETTINGS.configJson);
-            this.display();
+            this.draftConfig = DEFAULT_SETTINGS.configJson;
+            this.configInput?.setValue(this.draftConfig);
             new Notice("已恢复默认 Mermaid 配置");
           } catch (error) {
             console.error("[mermaid-lens] Failed to restore default config", error);
             new Notice("恢复默认配置失败，请查看开发者控制台");
           }
         }));
+  }
 
-    new Setting(containerEl)
-      .setName("打开大图的操作")
-      .setDesc("默认单击打开；图中的链接和按钮不会触发大图。")
-      .addDropdown((dropdown) => dropdown
-        .addOption("single", "单击图表")
-        .addOption("double", "双击图表")
-        .addOption("button", "仅使用展开按钮")
-        .setValue(this.plugin.settings.openTrigger)
-        .onChange(async (value) => {
-          this.plugin.settings.openTrigger = value as OpenTrigger;
-          await this.plugin.saveSettings();
-          this.plugin.refreshDiagramControls();
-        }));
+  private renderOpenTrigger(setting: Setting): void {
+    setting.addDropdown((dropdown) => dropdown
+      .addOption("single", "单击图表")
+      .addOption("double", "双击图表")
+      .addOption("button", "仅使用展开按钮")
+      .setValue(this.plugin.settings.openTrigger)
+      .onChange(async (value) => {
+        this.plugin.settings.openTrigger = value as OpenTrigger;
+        await this.plugin.saveSettings();
+        this.plugin.refreshDiagramControls();
+      }));
+  }
 
-    new Setting(containerEl)
-      .setName("显示展开按钮")
-      .setDesc("在 Mermaid 图右上角显示展开按钮。")
-      .addToggle((toggle) => toggle
-        .setValue(this.plugin.settings.showExpandButton)
-        .onChange(async (value) => {
-          this.plugin.settings.showExpandButton = value;
-          await this.plugin.saveSettings();
-          this.plugin.refreshDiagramControls();
-        }));
+  private renderExpandButtonToggle(setting: Setting): void {
+    setting.addToggle((toggle) => toggle
+      .setValue(this.plugin.settings.showExpandButton)
+      .onChange(async (value) => {
+        this.plugin.settings.showExpandButton = value;
+        await this.plugin.saveSettings();
+        this.plugin.refreshDiagramControls();
+      }));
   }
 }
