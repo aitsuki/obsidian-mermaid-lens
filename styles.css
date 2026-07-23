@@ -43,9 +43,9 @@
   opacity: 0.9;
 }
 
-.mermaid-lens-expand:hover {
+.mermaid-lens-host > .mermaid-lens-expand:hover {
   color: var(--text-normal);
-  opacity: 1 !important;
+  opacity: 1;
 }
 
 .mermaid-lens-modal {
@@ -110,18 +110,18 @@
   cursor: grabbing;
 }
 
-.mermaid-lens-clone {
+.mermaid-lens-modal .mermaid-lens-stage > .mermaid-lens-clone {
   position: absolute;
   top: 0;
   left: 0;
-  max-width: none !important;
-  max-height: none !important;
+  max-width: none;
+  max-height: none;
   transform-origin: 0 0;
   will-change: transform;
 }
 
 .mermaid-lens-config-input {
-  width: min(100%, 760px) !important;
+  width: min(100%, 760px);
   min-width: min(70vw, 760px);
   resize: vertical;
   font-family: var(--font-monospace);

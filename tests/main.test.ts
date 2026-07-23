@@ -107,7 +107,7 @@ describe("MermaidLensPlugin", () => {
     (plugin as any).configManager = manager;
     await plugin.onload();
     expect(manager.install).toHaveBeenCalledWith(JSON.parse(DEFAULT_SETTINGS.configJson));
-    expect(notices).toContain("Mermaid Lens：保存的配置无效，本次使用默认配置");
+    expect(notices).toContain("保存的 Mermaid 配置无效，本次使用默认配置");
   });
 
   it("retries defaults if Mermaid rejects the saved config", async () => {
@@ -121,7 +121,7 @@ describe("MermaidLensPlugin", () => {
     (plugin as any).configManager = manager;
     await plugin.onload();
     expect(manager.install).toHaveBeenCalledTimes(2);
-    expect(notices).toContain("Mermaid Lens：配置无法应用，已尝试恢复默认配置");
+    expect(notices).toContain("Mermaid 配置无法应用，已尝试恢复默认配置");
   });
 
   it("clears timers and disposes collaborators on unload", () => {

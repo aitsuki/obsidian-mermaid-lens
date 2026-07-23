@@ -4,7 +4,7 @@ const BLOCKED_KEYS = new Set(["__proto__", "prototype", "constructor"]);
 
 function isPlainObject(value: unknown): value is MermaidConfig {
   if (value === null || typeof value !== "object" || Array.isArray(value)) return false;
-  const prototype = Object.getPrototypeOf(value);
+  const prototype: unknown = Object.getPrototypeOf(value);
   return prototype === Object.prototype || prototype === null;
 }
 

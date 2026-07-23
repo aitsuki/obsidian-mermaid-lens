@@ -1,12 +1,13 @@
 {
   "name": "obsidian-mermaid-lens",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Global Mermaid configuration and a pan/zoom viewer for Obsidian.",
   "main": "dist/main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "lint": "eslint src",
     "typecheck:test": "tsc --noEmit -p tsconfig.tests.json",
     "build": "tsc --noEmit && npm run typecheck:test && node esbuild.config.mjs production",
     "deploy": "npm run build && node scripts/deploy.mjs",
@@ -21,9 +22,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.10.2",
+    "@typescript-eslint/parser": "^8.65.0",
     "@vitest/coverage-v8": "^4.1.10",
-    "builtin-modules": "^4.0.0",
     "esbuild": "^0.28.1",
+    "eslint": "^9.39.5",
+    "eslint-plugin-obsidianmd": "^0.4.1",
     "happy-dom": "^20.11.0",
     "obsidian": "latest",
     "typescript": "^5.7.2",

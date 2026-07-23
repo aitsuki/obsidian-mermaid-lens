@@ -33,7 +33,7 @@ export default class MermaidLensPlugin extends Plugin {
     } catch (error) {
       initialConfigJson = DEFAULT_SETTINGS.configJson;
       initialConfig = parseConfigJson(initialConfigJson);
-      new Notice("Mermaid Lens：保存的配置无效，本次使用默认配置");
+      new Notice("保存的 Mermaid 配置无效，本次使用默认配置");
       console.error("[mermaid-lens] Invalid saved config", error);
     }
 
@@ -42,7 +42,7 @@ export default class MermaidLensPlugin extends Plugin {
       this.activeConfigJson = initialConfigJson;
     } catch (error) {
       console.error("[mermaid-lens] Failed to apply saved config", error);
-      new Notice("Mermaid Lens：配置无法应用，已尝试恢复默认配置");
+      new Notice("Mermaid 配置无法应用，已尝试恢复默认配置");
       await this.configManager.install(parseConfigJson(DEFAULT_SETTINGS.configJson));
       this.activeConfigJson = DEFAULT_SETTINGS.configJson;
     }

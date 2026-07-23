@@ -36,6 +36,7 @@ const node = process.execPath;
 const npmCli = process.env.npm_execpath;
 if (!npmCli) throw new Error("Run this command through npm");
 run(node, ["scripts/set-version.mjs", version]);
+run(node, [npmCli, "run", "lint"]);
 run(node, [npmCli, "run", "test:coverage"]);
 run(node, [npmCli, "run", "build"]);
 

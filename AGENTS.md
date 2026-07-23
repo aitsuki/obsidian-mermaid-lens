@@ -9,9 +9,12 @@ Mermaid Lens 是一个 Obsidian 插件：统一 Mermaid 配置，并提供可平
 ```bash
 npm test
 npm run test:coverage
+npm run lint
 npm run build
 npm run deploy
 ```
+
+`npm run lint` 使用 Obsidian 官方 ESLint 规则。为兼容当前公开稳定版 Obsidian 1.12，设置页仍使用 `PluginSettingTab.display()`，因此会有两条与 Obsidian 1.13 声明式设置 API 有关的预期警告。
 
 `npm run deploy` 会部署到被忽略的 `ObsidianTestVault/`，复制 `fixtures/acceptance/`，注册并通过 URI 打开测试 Vault。只部署时使用 `--no-open`。
 
@@ -31,4 +34,5 @@ npm run deploy
 - 展开按钮必须避开 Obsidian 的编辑按钮。
 - 复杂图表渲染较慢，必须依靠 DOM 变化监听，不能只使用固定延迟扫描。
 - 配置应用或持久化失败时必须恢复上一份有效配置。
-- 修改后运行测试和构建；涉及真实 DOM/交互时使用验收 Vault 检查。
+- 最低兼容 Obsidian 1.12；在 1.13 成为公开稳定版前，不要为了消除设置 API 警告而提高 `minAppVersion`。
+- 修改后运行 lint、测试和构建；涉及真实 DOM/交互时使用验收 Vault 检查。

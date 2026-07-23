@@ -11,8 +11,8 @@ interface RegistryOptions {
 }
 
 interface HostHandlers {
-  click(event: MouseEvent): void;
-  doubleClick(event: MouseEvent): void;
+  click: (this: void, event: MouseEvent) => void;
+  doubleClick: (this: void, event: MouseEvent) => void;
 }
 
 type ViewerOpener = (app: App, svg: SVGSVGElement) => void;
@@ -55,7 +55,7 @@ export class DiagramRegistry {
   dispose(roots: ParentNode[]): void {
     for (const root of roots) {
       for (const [observedRoot, observer] of this.observers) {
-        if (observedRoot === root || (root as Node).contains(observedRoot as Node)) {
+        if (observedRoot === root || root.contains(observedRoot)) {
           observer.disconnect();
           this.observers.delete(observedRoot);
         }
@@ -129,17 +129,16 @@ export class DiagramRegistry {
     }
     if (button) return;
 
-    button = host.ownerDocument.createElement("button");
-    button.className = "mermaid-lens-expand";
-    button.setAttribute("aria-label", "打开 Mermaid 大图");
-    button.setAttribute("title", "打开大图");
+    button = host.createEl("button", {
+      cls: "mermaid-lens-expand",
+      attr: { "aria-label": "打开 Mermaid 大图", title: "打开大图" }
+    });
     setIcon(button, "expand");
     button.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
       this.open(host);
     });
-    host.appendChild(button);
   }
 
   private handleOpenEvent(host: HTMLElement, event: MouseEvent, eventTrigger: OpenTrigger): void {

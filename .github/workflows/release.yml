@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@v4
 
@@ -39,11 +41,21 @@ jobs:
             exit 1
           fi
 
+      - name: Lint
+        run: npm run lint
+
       - name: Test
         run: npm run test:coverage
 
       - name: Build
         run: npm run build
+
+      - name: Attest release assets
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: |
+            dist/main.js
+            dist/styles.css
 
       - name: Create release
         env:

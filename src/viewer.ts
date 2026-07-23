@@ -43,8 +43,6 @@ export class MermaidViewerModal extends Modal {
     svg.addClass("mermaid-lens-clone");
     svg.style.width = `${size.width}px`;
     svg.style.height = `${size.height}px`;
-    svg.style.maxWidth = "none";
-    svg.style.maxHeight = "none";
     stage.appendChild(svg);
 
     const handlers = this.setupPanZoom(stage, svg, size);

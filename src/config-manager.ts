@@ -4,11 +4,20 @@ import { MermaidConfig, mergeConfig } from "./config-utils";
 export { parseConfigJson } from "./config-utils";
 
 export interface MermaidApi {
-  initialize(config: MermaidConfig): void;
+  initialize: (config: MermaidConfig) => void;
   getConfig?: () => MermaidConfig;
 }
 
 type MermaidLoader = () => Promise<MermaidApi>;
+
+async function loadObsidianMermaid(): Promise<MermaidApi> {
+  const loaded: unknown = await loadMermaid();
+  if (loaded === null || typeof loaded !== "object" || !("initialize" in loaded)
+    || typeof loaded.initialize !== "function") {
+    throw new Error("Obsidian returned an invalid Mermaid API");
+  }
+  return loaded as MermaidApi;
+}
 
 /**
  * Wraps Obsidian's shared Mermaid instance. The wrapper becomes a transparent
@@ -23,7 +32,7 @@ export class MermaidConfigManager {
   private customConfig: MermaidConfig = {};
   private active = false;
 
-  constructor(load: MermaidLoader = async () => loadMermaid() as unknown as MermaidApi) {
+  constructor(load: MermaidLoader = loadObsidianMermaid) {
     this.load = load;
   }
 
@@ -46,17 +55,17 @@ export class MermaidConfigManager {
         ? incoming
         : {};
       if (!this.active) {
-        original.call(api, nextBase);
+        original(nextBase);
         return;
       }
       this.baseConfig = nextBase;
-      original.call(api, mergeConfig(nextBase, this.customConfig));
+      original(mergeConfig(nextBase, this.customConfig));
     };
     this.wrapper = wrapper;
     api.initialize = wrapper;
 
     try {
-      original.call(api, mergeConfig(this.baseConfig, config));
+      original(mergeConfig(this.baseConfig, config));
     } catch (error) {
       this.active = false;
       if (api.initialize === wrapper) api.initialize = original;
@@ -72,11 +81,11 @@ export class MermaidConfigManager {
 
     const previous = this.customConfig;
     try {
-      this.originalInitialize.call(this.api, mergeConfig(this.baseConfig, config));
+      this.originalInitialize(mergeConfig(this.baseConfig, config));
       this.customConfig = config;
     } catch (error) {
       try {
-        this.originalInitialize.call(this.api, mergeConfig(this.baseConfig, previous));
+        this.originalInitialize(mergeConfig(this.baseConfig, previous));
       } catch (restoreError) {
         console.error("[mermaid-lens] Failed to restore Mermaid config", restoreError);
       }
@@ -93,7 +102,7 @@ export class MermaidConfigManager {
     if (api && original) {
       if (wrapper && api.initialize === wrapper) api.initialize = original;
       try {
-        original.call(api, this.baseConfig);
+        original(this.baseConfig);
       } catch (error) {
         console.error("[mermaid-lens] Failed to restore Obsidian Mermaid config", error);
       }

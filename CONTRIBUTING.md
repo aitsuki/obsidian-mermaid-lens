@@ -21,14 +21,18 @@ npm ci
 ```bash
 npm test
 npm run test:coverage
+npm run lint
 npm run typecheck:test
 npm run build
 ```
 
 - `npm test`：运行单元测试和 DOM 行为测试。
 - `npm run test:coverage`：运行测试并检查覆盖率门槛。
+- `npm run lint`：使用 Obsidian 官方 ESLint 规则检查源码。
 - `npm run typecheck:test`：检查源码和测试代码的 TypeScript 类型。
 - `npm run build`：执行源码与测试类型检查，并在 `dist/` 中生成生产构建。
+
+为兼容当前公开稳定版 Obsidian 1.12，设置页继续使用 `PluginSettingTab.display()`。因此 lint 会报告两条与 Obsidian 1.13 声明式设置 API 有关的预期警告；它们不阻塞构建或插件市场审核。不要仅为消除这两条警告而提高 `minAppVersion`。
 
 生产构建包含：
 
@@ -97,18 +101,19 @@ npm run deploy -- --no-open
 ## 发布
 
 ```bash
-# 发布 release，自动更新版本号、运行测试与构建，提交版本变更并创建同名 annotated tag
+# 发布 release，自动更新版本号、运行 lint、测试与构建，提交版本变更并创建同名 annotated tag
 npm run release -- <tag>
 
 # 推送提交和tag
 git push --atomic origin main refs/tags/<tag>
 ```
 
-GitHub Actions 会在 tag 推送后重新验证版本、运行测试与构建、生成发行说明，并发布带有 `main.js`、`manifest.json` 和 `styles.css` 的 GitHub Release。
+GitHub Actions 会在 tag 推送后重新验证版本，运行 lint、测试与构建，为 `main.js` 和 `styles.css` 生成 GitHub artifact attestations，生成发行说明，并发布带有 `main.js`、`manifest.json` 和 `styles.css` 的 GitHub Release。
 
 ## 提交前检查
 
 ```bash
+npm run lint
 npm run test:coverage
 npm run build
 ```
